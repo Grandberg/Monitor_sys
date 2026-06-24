@@ -2,6 +2,10 @@
 
 Lightweight server resource monitoring system packaged as a Docker container, controlled via a Telegram Bot.
 
+<p align="center">
+  <img src="assets/dashboard.jpg" alt="VPS Monitor Control Panel" width="900"/>
+</p>
+
 ## Features
 - **📊 Real-time Monitoring**: Track CPU, RAM, Disk space, Load Average, CPU Temperature, and System Uptime.
 - **🚨 Smart Notifications**: Immediate alerts on high CPU/RAM/Disk usage with recovery detection and anti-spam alert cooldowns.
