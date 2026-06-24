@@ -3,7 +3,7 @@
 Lightweight server resource monitoring system packaged as a Docker container, controlled via a Telegram Bot.
 
 <p align="center">
-  <img src="assets/dashboard.jpg" alt="VPS Monitor Control Panel" width="900"/>
+  <img src="assets/dashboard.jpg" alt="VPS Monitor Control Panel" width="500"/>
 </p>
 
 ## Features
