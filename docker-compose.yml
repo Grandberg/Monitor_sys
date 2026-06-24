@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  monitor:
+    build: .
+    container_name: vps-monitor
+    restart: unless-stopped
+    # privileged is required to execute host commands (chroot, reboot, shutdown)
+    # and to access the host's system directories properly.
+    privileged: true
+    # network_mode: host allows monitoring host network interfaces directly
+    network_mode: host
+    env_file:
+      - .env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      # Mount host root to execute commands via chroot /host/root
+      - /:/host/root:rw
