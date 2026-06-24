@@ -10,6 +10,17 @@ services:
     privileged: true
     # network_mode: host allows monitoring host network interfaces directly
     network_mode: host
+    environment:
+      - TELEGRAM_BOT_TOKEN
+      - ALLOWED_CHAT_IDS
+      - CPU_THRESHOLD
+      - RAM_THRESHOLD
+      - DISK_THRESHOLD
+      - CHECK_INTERVAL
+      - ALERT_COOLDOWN
+      - HOST_ROOT_PATH
+      - PROCFS_PATH=/host/proc
+      - PYTHONPATH=/app
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /proc:/host/proc:ro

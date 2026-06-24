@@ -36,32 +36,37 @@ Inside a Docker container, standard tools inspect container-specific memory/CPU 
 3. To find your **Telegram Chat ID**, send a message to your new bot, then open `https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates` in a browser or search for [@userinfobot](https://t.me/userinfobot) to get your numerical ID.
 
 ### 2. Configure Environment Variables
-Copy `.env.example` to `.env` on your server:
+You can configure the application in one of two ways:
+
+#### Option A: Portainer Stack (Recommended)
+When creating a Stack in Portainer:
+1. Paste the contents of `docker-compose.yml`.
+2. Under **Environment variables**, click **Add environment variable** and specify the following:
+   * `TELEGRAM_BOT_TOKEN`: Your bot token.
+   * `ALLOWED_CHAT_IDS`: Comma-separated allowed chat IDs (e.g., `123456789`).
+   * `CPU_THRESHOLD` (optional, defaults to `85`)
+   * `RAM_THRESHOLD` (optional, defaults to `85`)
+   * `DISK_THRESHOLD` (optional, defaults to `90`)
+   * `CHECK_INTERVAL` (optional, defaults to `60`)
+   * `ALERT_COOLDOWN` (optional, defaults to `1800`)
+
+#### Option B: Manual Docker Compose (Using `.env` file)
+Copy `.env.example` to `.env` in the same directory:
 ```bash
 cp .env.example .env
 ```
 Open `.env` and fill in your details:
 ```env
 TELEGRAM_BOT_TOKEN=your_bot_token_here
-ALLOWED_CHAT_IDS=your_chat_id_here,another_optional_chat_id
-
-# Customize thresholds if needed (defaults below)
-CPU_THRESHOLD=85
-RAM_THRESHOLD=85
-DISK_THRESHOLD=90
-
-# Monitoring check interval (in seconds)
-CHECK_INTERVAL=60
-
-# Prevent notification spam (seconds between alerts, default 30 mins)
-ALERT_COOLDOWN=1800
+ALLOWED_CHAT_IDS=your_chat_id_here
 ```
 
 ### 3. Deploy
-Build and run the stack using Docker Compose:
-```bash
-docker compose up -d --build
-```
+* **Portainer**: Click **Deploy the stack**.
+* **CLI**: Build and run using:
+  ```bash
+  docker compose up -d --build
+  ```
 
 ---
 

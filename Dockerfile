@@ -15,5 +15,7 @@ COPY src/ ./src/
 ENV PYTHONUNBUFFERED=1
 # Force psutil to use host proc filesystem
 ENV PROCFS_PATH=/host/proc
+# Set PYTHONPATH to search for modules in the /app directory
+ENV PYTHONPATH=/app
 
 CMD ["python", "src/main.py"]
