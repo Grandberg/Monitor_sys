@@ -18,6 +18,8 @@ services:
       - DISK_THRESHOLD
       - CHECK_INTERVAL
       - ALERT_COOLDOWN
+      - CPU_ALERT_DELAY
+      - RAM_ALERT_DELAY
       - HOST_ROOT_PATH
       - PROCFS_PATH=/host/proc
       - PYTHONPATH=/app

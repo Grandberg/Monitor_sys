@@ -49,6 +49,8 @@ When creating a Stack in Portainer:
    * `DISK_THRESHOLD` (optional, defaults to `90`)
    * `CHECK_INTERVAL` (optional, defaults to `60`)
    * `ALERT_COOLDOWN` (optional, defaults to `1800`)
+   * `CPU_ALERT_DELAY` (optional, delay in seconds before alerting on high CPU, defaults to `300` / 5 minutes)
+   * `RAM_ALERT_DELAY` (optional, delay in seconds before alerting on high RAM, defaults to `300` / 5 minutes)
 
 #### Option B: Manual Docker Compose (Using `.env` file)
 Copy `.env.example` to `.env` in the same directory:

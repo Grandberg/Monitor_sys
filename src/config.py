@@ -32,6 +32,9 @@ DISK_THRESHOLD = float(os.getenv("DISK_THRESHOLD", "90"))
 # Intervals & Cooldowns
 CHECK_INTERVAL = int(os.getenv("CHECK_INTERVAL", "60"))
 ALERT_COOLDOWN = int(os.getenv("ALERT_COOLDOWN", "1800"))
+# Notification delay (duration of spike in seconds before alerting)
+CPU_ALERT_DELAY = int(os.getenv("CPU_ALERT_DELAY", "300"))
+RAM_ALERT_DELAY = int(os.getenv("RAM_ALERT_DELAY", "300"))
 
 # Host Paths
 HOST_ROOT_PATH = os.getenv("HOST_ROOT_PATH", "/host/root")
