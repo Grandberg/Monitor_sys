@@ -1,0 +1,16 @@
+# Secrets and local env — never commit
+secrets/
+.env
+*.pem
+id_ed25519*
+!*.pub.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Data
+data/
+*.json.bak

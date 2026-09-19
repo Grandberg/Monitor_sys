@@ -7,13 +7,12 @@ Lightweight server resource monitoring system packaged as a Docker container, co
 </p>
 
 ## Features
-- **📊 Real-time Monitoring**: Track CPU, RAM, Disk space, Load Average, CPU Temperature, and System Uptime.
-- **🚨 Smart Notifications**: Immediate alerts on high CPU/RAM/Disk usage with recovery detection and anti-spam alert cooldowns.
-- **🔄 Remote VPS Management**:
-  - `Restart VPS` (runs `reboot` on the host)
-  - `Shutdown VPS` (runs `shutdown` on the host)
-  - `Restart Docker` (runs `systemctl restart docker` on the host)
-  - `Check Status` (shows running docker containers on the host, CPU, RAM, Disk usage)
+- **🖥 Multi-server UI**: Telegram starts with a server list (`MY107`, `MYOR`); each server opens the control panel. Last selected server is restored on `/start`.
+- **📊 Real-time Monitoring**: Track CPU, RAM, Disk space, Load Average, CPU Temperature, and System Uptime (local mounts on MY107, SSH collector on MYOR).
+- **🚨 Smart Notifications**: Alerts on high CPU/RAM/Disk usage with per-server labels, recovery detection, and anti-spam cooldowns.
+- **🔄 Remote VPS Management** (scoped to the selected server):
+  - `Restart VPS` / `Shutdown VPS` / `Restart Docker`
+  - `Check Status` / `Check Docker Status`
 - **🔐 Secure Access**: Strictly limits command execution and monitoring reports to authorized Telegram user/chat IDs.
 - **🐳 Optimized Dockerization**: Extremely small memory footprint (runs under Python 3.11-slim) and accesses the host OS namespace directly.
 
@@ -48,6 +47,7 @@ When creating a Stack in Portainer:
 2. Under **Environment variables**, click **Add environment variable** and specify the following:
    * `TELEGRAM_BOT_TOKEN`: Your bot token.
    * `ALLOWED_CHAT_IDS`: Comma-separated allowed chat IDs (e.g., `123456789`).
+   * `SERVERS` (optional): `MY107|local,MYOR|ssh|opc@92.5.8.212:22|/keys/id_ed25519_monitor_myor`
    * `CPU_THRESHOLD` (optional, defaults to `85`)
    * `RAM_THRESHOLD` (optional, defaults to `85`)
    * `DISK_THRESHOLD` (optional, defaults to `90`)
@@ -77,15 +77,24 @@ ALLOWED_CHAT_IDS=your_chat_id_here
 ---
 
 ## Telegram Bot Command Reference
-- `/start` - Opens the visual dashboard with buttons.
-- `/status` - Immediately prints system resource usage.
+- `/start` - Server list, or last selected server panel (remembered per chat).
+- `/status` - Prints resource usage for the last selected server.
 
-**Control Buttons:**
+**Server list:**
+- **🖥 MY107** / **🖥 MYOR** — open that server's control panel.
+
+**Control Buttons (per server):**
 - **📊 Check VPS Status**: Updates resource monitoring stats.
 - **🐳 Check Docker Status**: Outputs a list of active Docker containers on the host (like `docker ps`).
 - **🔄 Restart VPS**: Prompts with confirmation dialog, then reboots the VPS.
 - **⛔ Shutdown VPS**: Prompts with confirmation dialog, then shuts down the VPS.
 - **🐳 Restart Docker Service**: Prompts with confirmation dialog, then restarts the host's Docker daemon.
+- **⬅️ Servers**: Back to the server list.
+
+### Deploy notes (MY107 bot + MYOR via SSH)
+1. Public key `monitor-sys-myor` must be in `opc@MYOR:~/.ssh/authorized_keys`.
+2. Private key must be on MY107 at `/root/.ssh/id_ed25519_monitor_myor` (mounted into the container as `/keys/id_ed25519_monitor_myor`).
+3. Local copy of the key pair lives under `secrets/` (gitignored) until you deploy.
 
 ---
 

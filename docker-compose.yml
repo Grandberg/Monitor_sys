@@ -9,6 +9,7 @@ services:
     # and to access the host's system directories properly.
     privileged: true
     # network_mode: host allows monitoring host network interfaces directly
+    # and SSH outbound to remote servers (MYOR).
     network_mode: host
     environment:
       - TELEGRAM_BOT_TOKEN
@@ -23,9 +24,20 @@ services:
       - HOST_ROOT_PATH
       - PROCFS_PATH=/host/proc
       - PYTHONPATH=/app
+      - SESSION_STORE_PATH=/data/sessions.json
+      - DEFAULT_SSH_KEY_PATH=/keys/id_ed25519_monitor_myor
+      # MY107 = local host mounts; MYOR = SSH remote
+      - SERVERS=MY107|local,MYOR|ssh|opc@92.5.8.212:22|/keys/id_ed25519_monitor_myor
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       # Mount host root to execute commands via chroot /host/root
       - /:/host/root:rw
+      # Persist last selected server per Telegram chat
+      - monitor-sessions:/data
+      # SSH private key for MYOR (place file on host before deploy)
+      - /root/.ssh/id_ed25519_monitor_myor:/keys/id_ed25519_monitor_myor:ro
+
+volumes:
+  monitor-sessions:

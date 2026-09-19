@@ -1,0 +1,13 @@
+---
+description: Local-first workflow, manual git/deploy, prod read-only defaults
+alwaysApply: true
+---
+
+# Monitor_sys operational rules
+
+- All code changes are made in the **local** working copy only.
+- **Do not commit** unless the user explicitly asks. Commits are manual.
+- **Do not deploy** unless the user explicitly asks. Deploy is manual.
+- Production servers (**MY107**, **MYOR**) are **read-only** by default: inspect/status only.
+- Write/change anything on prod (keys, files, packages, containers, firewall) only when the user explicitly requests it.
+- Server names in the bot UI: `MY107`, `MYOR`.
