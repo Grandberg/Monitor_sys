@@ -1,4 +1,4 @@
-"""Persist last selected server (and optional view) per Telegram chat."""
+"""Persist last selected server and UI message IDs per Telegram chat."""
 from __future__ import annotations
 
 import json
@@ -44,20 +44,28 @@ def _save(data: dict[str, Any]) -> None:
         logger.error(f"Failed to write session store {path}: {e}")
 
 
+def _entry(data: dict[str, Any], chat_id: int) -> dict[str, Any]:
+    key = str(chat_id)
+    entry = data.get(key)
+    if not isinstance(entry, dict):
+        entry = {}
+        data[key] = entry
+    return entry
+
+
 def get_chat_session(chat_id: int) -> dict[str, Any]:
     with _lock:
         data = _load()
         entry = data.get(str(chat_id), {})
-        return entry if isinstance(entry, dict) else {}
+        return dict(entry) if isinstance(entry, dict) else {}
 
 
 def set_last_server(chat_id: int, server_id: str, view: str = "panel") -> None:
     with _lock:
         data = _load()
-        data[str(chat_id)] = {
-            "last_server_id": server_id,
-            "last_view": view,
-        }
+        entry = _entry(data, chat_id)
+        entry["last_server_id"] = server_id
+        entry["last_view"] = view
         _save(data)
 
 
@@ -65,6 +73,52 @@ def get_last_server_id(chat_id: int) -> Optional[str]:
     session = get_chat_session(chat_id)
     value = session.get("last_server_id")
     return value if isinstance(value, str) and value else None
+
+
+def get_ui_message_ids(chat_id: int) -> list[int]:
+    session = get_chat_session(chat_id)
+    raw = session.get("ui_message_ids", [])
+    if not isinstance(raw, list):
+        return []
+    ids: list[int] = []
+    for item in raw:
+        try:
+            ids.append(int(item))
+        except (TypeError, ValueError):
+            continue
+    return ids
+
+
+def set_ui_message_ids(chat_id: int, message_ids: list[int]) -> None:
+    # Keep a bounded recent list (Telegram may refuse very old deletes anyway)
+    cleaned = []
+    seen = set()
+    for mid in message_ids:
+        try:
+            value = int(mid)
+        except (TypeError, ValueError):
+            continue
+        if value in seen:
+            continue
+        seen.add(value)
+        cleaned.append(value)
+    cleaned = cleaned[-50:]
+
+    with _lock:
+        data = _load()
+        entry = _entry(data, chat_id)
+        entry["ui_message_ids"] = cleaned
+        _save(data)
+
+
+def add_ui_message_id(chat_id: int, message_id: int) -> None:
+    ids = get_ui_message_ids(chat_id)
+    ids.append(int(message_id))
+    set_ui_message_ids(chat_id, ids)
+
+
+def clear_ui_message_ids(chat_id: int) -> None:
+    set_ui_message_ids(chat_id, [])
 
 
 def clear_last_server(chat_id: int) -> None:

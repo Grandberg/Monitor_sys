@@ -155,19 +155,9 @@ async def main():
     bot = Bot(token=TELEGRAM_BOT_TOKEN)
     dp = get_dispatcher(bot)
 
-    server_names = ", ".join(s.name for s in servers.list_servers()) or "none"
-    for chat_id in ALLOWED_CHAT_IDS:
-        try:
-            await bot.send_message(
-                chat_id,
-                "🚀 **VPS Monitoring Bot has started successfully!**\n"
-                f"Servers: `{server_names}`\n"
-                "Use `/start` to open the control panel.",
-                parse_mode="Markdown",
-            )
-            logger.info(f"Sent startup message to admin ID: {chat_id}")
-        except Exception as e:
-            logger.error(f"Could not send startup message to {chat_id}: {e}")
+    # Do not send startup chat messages — they clutter the dialog.
+    # Tracked UI IDs from a previous run are kept so /start can purge leftovers.
+    logger.info("Startup chat notifications disabled; waiting for /start.")
 
     logger.info("Starting Telegram Bot long-polling...")
     try:
